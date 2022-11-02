@@ -1,0 +1,173 @@
+
+create database practicedb;
+use practicedb;
+
+CREATE TABLE IF NOT EXISTS Room(
+ RoomId VARCHAR(15),
+ Capacity INTEGER,
+ TypeT VARCHAR(3),
+ PRIMARY KEY (RoomId),
+ CONSTRAINT Room_TypeT_check check (TypeT in ('C', 'CR', 'A'))
+);
+
+
+CREATE TABLE IF NOT EXISTS Course (
+ CourseCode VARCHAR(10),
+ Section INTEGER,
+ Title VARCHAR(30) NOT NULL,
+ Professor VARCHAR(30) NOT NULL,
+ PRIMARY KEY (CourseCode, Section)
+);
+
+
+CREATE TABLE IF NOT EXISTS Professor (
+ IDProfessor int,
+ NameT VARCHAR(50),
+ Times VARCHAR(20),
+ PRIMARY KEY (IDProfessor),
+ CONSTRAINT Professor_Times_check check (Times in ('FullTime', 'Partial Time'))
+);
+ 
+
+
+CREATE TABLE IF NOT EXISTS Period(
+ Title VARCHAR(20),
+ StartDate TIMESTAMP NOT NULL,
+ EndDate TIMESTAMP NOT NULL,
+ PRIMARY KEY (Title)
+);
+
+Create Table IF NOT EXISTS ScheduleT(
+  KeySche VARCHAR(10),
+  Section INTEGER,
+  WeekDay INTEGER,
+  HourT INTEGER,
+  MinuteT INTEGER,
+  Duration INTEGER,
+  Period VARCHAR(30),
+  Semester INTEGER,
+ RoomId VARCHAR(8) REFERENCES Room,
+  PRIMARY KEY (KeySche, Section),
+  FOREIGN KEY (KeySche) REFERENCES Course(CourseCode),
+  CONSTRAINT Semester  CHECK (Semester BETWEEN 1 AND 8),
+  CONSTRAINT WeekDay   CHECK (WeekDay  BETWEEN 1 AND 7),
+  CONSTRAINT MinuteT    CHECK (MinuteT   BETWEEN 0 AND 59),
+  CONSTRAINT HourT      CHECK (HourT   BETWEEN 0 AND 23)
+);
+
+
+Create Table IF NOT EXISTS Reservation(
+  RoomId VARCHAR(8) REFERENCES Room,
+  NameTT VARCHAR(30) NOT NULL,
+  DateTimeT TIMESTAMP NOT NULL,
+  Duration INTEGER,
+  PRIMARY KEY (RoomId,DateTimeT),
+  FOREIGN KEY (RoomId) REFERENCES Room(RoomId)
+);
+
+INSERT INTO Room
+VALUES ('CS107', 16, 'A');
+INSERT INTO Room
+VALUES ('IA109', 20, 'C');
+INSERT INTO Room
+VALUES ('HU304', 8, 'CR');
+INSERT INTO Room
+VALUES ('IA204', 24, 'C');
+INSERT INTO Room
+VALUES ('CN212', 16, 'C');
+INSERT INTO Room
+VALUES ('CS111', 32, 'CR');
+INSERT INTO Room
+VALUES ('IA102', 50, 'C');
+INSERT INTO Room
+VALUES ('CN125', 20, 'A');
+
+-- Primavera
+
+INSERT INTO Course
+VALUES ('LIS2082', 1, 'Bases de datos', 'José Luis Zechinelli');
+INSERT INTO Course
+VALUES ('LIS2082', 2, 'DataBases', 'José Luis Zechinelli');
+INSERT INTO Course
+VALUES ('LIS2012', 1, 'Matematicas Discretas', 'Zobeida Guzman');
+INSERT INTO Course
+VALUES ('LIS2012', 2, 'Discrete Mathematics', 'Sandra Barajas');
+INSERT INTO Course
+VALUES ('LIS2022', 1, 'Computational Architectures', 'Oleg Starovstenko');
+INSERT INTO Course
+VALUES ('LIS2022', 2, 'Arquitecturas Computacionales', 'Karen Enríquez');
+INSERT INTO Course
+VALUES ('LIS2062', 1, 'Sistemas Operativos', 'Mireya Paredes');
+INSERT INTO Course
+VALUES ('LIS2062', 2, 'Operative Systems', 'Verónica Rodríguez');
+INSERT INTO Course
+VALUES ('LIS2052', 1, 'Ecuaciones Diferenciales', 'Rafael Azuaje');
+INSERT INTO Course
+VALUES ('LIS2052', 2, 'Ecuaciones Diferenciales', 'Rául Jiménez');
+
+-- Otoño
+
+INSERT INTO Course
+VALUES ('MAT0012', 1, 'Matematicas para pensar', 'Camilo Lopez');
+INSERT INTO Course
+VALUES ('MAT1012', 1, 'Matemáticas universitarias', 'Daniel Jimenez');
+INSERT INTO Course
+VALUES ('ESP0012', 1, 'Argumentacion academica', 'Hugo Rodriguez');
+INSERT INTO Course
+VALUES ('LIS1022', 1, 'Object Oriented Programming', 'Ingrid Kirsching');
+INSERT INTO Course
+VALUES ('', 1, 'Arte y Cultura de las Americas', 'Marisol Hernandez');
+INSERT INTO Course
+VALUES ('Art0012', 2, 'Arte, Historia y Cultura', 'Claudia Ivett');
+INSERT INTO Course
+VALUES ('Lis3052', 1, 'Practicas En La Profesion I', 'NA');
+INSERT INTO Course
+VALUES ('Lis3052', 2, 'Practicas En La Profesion I', 'NA');
+INSERT INTO Course
+VALUES ('Lrt3032', 1, 'Sistemas Embedidos', 'Gibran');
+INSERT INTO Course
+VALUES ('Lrt3032', 2, 'Sistemas Embedidos', 'Oleg Starovstenko');
+INSERT INTO Course
+VALUES ('FIS2022', 1, 'Física General II', 'Moises Chavez');
+
+
+
+
+INSERT INTO Period
+VALUES ('Otono 2022','2022-08-01' ,'2022-12-30');
+INSERT INTO Period
+VALUES ('Primavera 2022','2022-01-14' ,'2022-05-8');
+-- INSERT INTO Periods
+-- VALUES ('Otono 2022','2022-08-7' ,'2022-12-11');
+-- INSERT INTO Periods
+-- VALUES ('Primavera 2022','2022-01-01' ,'2022-05-30');
+
+
+INSERT INTO ScheduleT
+VALUES('Lis2082', 1, 1, 11, 0, 50, 'SPRING 2022', 4, 'CN124');
+INSERT INTO ScheduleT
+VALUES('Lis2012', 1, 2, 11, 30, 65, 'SPRING 2022', 4, 'CS107');
+INSERT INTO ScheduleT
+VALUES('Lis2022', 1, 1, 9, 0, 50, 'SPRING 2022', 4, 'CN109');
+INSERT INTO ScheduleT
+VALUES('Lis2062', 1, 2, 8, 30, 65, 'SPRING 2022', 4, 'IA104');
+INSERT INTO ScheduleT
+VALUES('Lis2052', 1, 1, 15, 0, 50, 'AUTUMN 2022', 4, 'NE111');
+
+
+
+INSERT INTO Reservation
+VALUES('IA109', 'Angel M', '2020-02-17 08:00:00', 50);
+INSERT INTO Reservation
+VALUES('CS107', 'Zobeida Guzman', '2020-01-15 11:30:00', 65);
+INSERT INTO Reservation
+VALUES('IA109', 'Mireya Paredes', '2020-01-15 08:30:00', 65);
+INSERT INTO Reservation
+VALUES('CN212', 'Profesor X', '2020-01-14 15:00:00', 50);
+INSERT INTO Reservation
+VALUES('CN125', 'Profesor Y', '2020-01-19 10:00:00', 60);
+
+INSERT INTO Professor
+VALUES('14111','Zechinelli Martini', 'FullTime');
+INSERT INTO Professor
+VALUES('14112','Oleg Starovstenko', 'FullTime');
